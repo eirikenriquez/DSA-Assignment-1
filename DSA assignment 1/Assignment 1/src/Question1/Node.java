@@ -8,10 +8,16 @@ public class Node<E> {
 
     public E data;
     public Node next;
+    public int x;
+    public int y;
+    public Direction direction;
 
     public Node() {
         this.data = null;
         this.next = null;
+        this.x = 0;
+        this.y = 0;
+        this.direction = null;
     }
 
     public boolean equals(Node node) {

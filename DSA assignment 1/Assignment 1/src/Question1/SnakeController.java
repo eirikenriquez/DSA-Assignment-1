@@ -11,8 +11,8 @@ public class SnakeController implements KeyListener {
 
     private final Board board;
 
-    public SnakeController(Board view) {
-        this.board = view;
+    public SnakeController(Board board) {
+        this.board = board;
     }
 
     @Override
@@ -27,18 +27,22 @@ public class SnakeController implements KeyListener {
             case KeyEvent.VK_LEFT:
             case KeyEvent.VK_A:
                 board.setDirection(Direction.LEFT);
+                System.out.println("left");
                 break;
             case KeyEvent.VK_RIGHT:
             case KeyEvent.VK_D:
                 board.setDirection(Direction.RIGHT);
+                System.out.println("right");
                 break;
             case KeyEvent.VK_UP:
             case KeyEvent.VK_W:
                 board.setDirection(Direction.UP);
+                System.out.println("up");
                 break;
             case KeyEvent.VK_DOWN:
             case KeyEvent.VK_S:
                 board.setDirection(Direction.DOWN);
+                System.out.println("down");
                 break;
             default:
                 break;

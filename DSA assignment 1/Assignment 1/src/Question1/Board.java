@@ -2,6 +2,7 @@ package Question1;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.Random;
 import javax.swing.JPanel;
@@ -15,30 +16,37 @@ import sun.java2d.loops.DrawRect;
 public class Board extends JPanel {
 
     private static final int MAX_NUMBERS = 10;
-    private static final int SCALE = 20;
+    private static final int SCALE = 15;
+    private static final int BOARD_WIDTH = 600;
+    private static final int BOARD_HEIGHT = 600;
+    private static final int MAX_X = BOARD_WIDTH / SCALE;
+    private static final int MAX_Y = BOARD_HEIGHT / SCALE;
     private final Random rand;
     private final LinkedList<Character> snake;
-    private final int width;
-    private final int height;
-    private Direction direction;
-    private int[] x;
-    private int[] y;
-    private int numbers;
+    private LinkedList<Integer> numbers;
     private char letter;
+    private int letterX;
+    private int letterY;
 
-    public Board(int width, int height) {
-        this.rand = new Random();
-        this.width = width;
-        this.height = height;
+    public Board() {
+        setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
         addKeyListener(new SnakeController(this));
-        this.snake = new LinkedList<>();
-        this.direction = Direction.RIGHT;
-        this.x = new int[width * SCALE];
-        this.y = new int[height * SCALE];
-        generateLetter();
+        setFocusable(true);
+        setBackground(Color.BLACK);
 
-        snake.add('a');
-        snake.add('b');
+        this.rand = new Random();
+        this.snake = new LinkedList<>();
+        numbers = new LinkedList<>();
+        generateLetter();
+        generateSnake();
+    }
+
+    private void generateSnake() {
+        snake.add('@');
+        Node head = snake.getNode(0);
+        head.direction = Direction.RIGHT;
+        head.x = 0;
+        head.y = 0;
     }
 
     private void generateLetter() {
@@ -47,6 +55,9 @@ public class Board extends JPanel {
         } else {
             generateUppercase();
         }
+
+        letterX = rand.nextInt(MAX_X);
+        letterY = rand.nextInt(MAX_Y);
     }
 
     private void generateLowercase() {
@@ -58,46 +69,89 @@ public class Board extends JPanel {
     }
 
     public void setDirection(Direction direction) {
-        this.direction = direction;
+        Node head = snake.getNode(0);
+        head.direction = direction;
     }
 
     @Override
     public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         draw(g);
     }
 
     private void draw(Graphics g) {
-        /*
-        // Draw initial 10 numbers
-        for (int i = 0; i < MAX_NUMBERS; i++) {
-            g.drawString(rand.nextInt(10) + "", rand.nextInt(maxWidth) + BOUNDARY_OFFSET, rand.nextInt(maxHeight) + BOUNDARY_OFFSET);
-        }
-
-        g.drawString(letter + "", rand.nextInt(maxWidth) + BOUNDARY_OFFSET, rand.nextInt(maxHeight) + BOUNDARY_OFFSET);
-         */
-
-        g.setColor(Color.BLACK);
-
-        // draw vertical lines
-        for (int yLine = 0; yLine <= width; yLine += SCALE) {
-            g.drawLine(yLine, 0, yLine, height * SCALE);
-        }
-
-        // draw horizontal lines
-        for (int xLine = 0; xLine <= width; xLine += SCALE) {
-            g.drawLine(0, xLine, width * SCALE, xLine);
-        }
-
         // draw snake
-        g.setColor(Color.yellow);
-        g.fillRect(0 * SCALE, 0 * SCALE, SCALE, SCALE);
+        drawSnake(g);
+
+        // draw first 10 numbers
+        drawFirstNumbers(g);
+
+        // draw letter (food)
+        drawLetter(g);
     }
 
-}
+    private void drawSnake(Graphics g) {
+        g.setColor(Color.GREEN);
 
-enum Direction {
-    LEFT,
-    RIGHT,
-    UP,
-    DOWN;
+        Node node = snake.getNode(0);
+        while (node != null) {
+            int x = (node.x * SCALE + 1) + SCALE;
+            int y = (node.y * SCALE + 1) + SCALE;
+
+            g.drawString(node.data.toString(), x, y);
+            node = node.next;
+        }
+    }
+
+    private void moveSnake() {
+        Node node = snake.getNode(0);
+        while (node != null) {
+            switch (node.direction) {
+                case LEFT:
+
+                    break;
+                case RIGHT:
+
+                    break;
+                case UP:
+
+                    break;
+                case DOWN:
+
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+            node = node.next;
+        }
+    }
+
+    private void drawFirstNumbers(Graphics g) {
+        g.setColor(Color.RED);
+
+        for (int i = 0; i < MAX_NUMBERS; i++) {
+            int num = rand.nextInt(10);
+            int x = rand.nextInt(MAX_X);
+            int y = rand.nextInt(MAX_Y);
+            int xToDisplay = ((x * SCALE + 1) + SCALE);
+            int yToDisplay = ((y * SCALE + 1) + SCALE);
+
+            g.drawString(Integer.toString(num), xToDisplay, yToDisplay);
+
+            numbers.add(num);
+            Node node = numbers.getNode(i);
+            node.x = x;
+            node.y = y;
+        }
+
+    }
+
+    private void drawLetter(Graphics g) {
+        int x = ((letterX * SCALE + 1) + SCALE);
+        int y = ((letterY * SCALE + 1) + SCALE);
+
+        g.setColor(Color.YELLOW);
+        g.drawString(Character.toString(letter), x, y);
+    }
+
 }
