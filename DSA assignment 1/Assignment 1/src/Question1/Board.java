@@ -1,10 +1,12 @@
 package Question1;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Random;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import sun.java2d.loops.DrawRect;
 
 /**
  *
@@ -13,23 +15,30 @@ import javax.swing.JTextArea;
 public class Board extends JPanel {
 
     private static final int MAX_NUMBERS = 10;
+    private static final int SCALE = 20;
     private final Random rand;
     private final LinkedList<Character> snake;
-    private final int maxWidth;
-    private final int maxHeight;
+    private final int width;
+    private final int height;
     private Direction direction;
-    private int x;
-    private int y;
+    private int[] x;
+    private int[] y;
     private int numbers;
     private char letter;
 
     public Board(int width, int height) {
         this.rand = new Random();
-        this.maxWidth = width;
-        this.maxHeight = height;
+        this.width = width;
+        this.height = height;
         addKeyListener(new SnakeController(this));
         this.snake = new LinkedList<>();
+        this.direction = Direction.RIGHT;
+        this.x = new int[width * SCALE];
+        this.y = new int[height * SCALE];
         generateLetter();
+
+        snake.add('a');
+        snake.add('b');
     }
 
     private void generateLetter() {
@@ -67,6 +76,21 @@ public class Board extends JPanel {
         g.drawString(letter + "", rand.nextInt(maxWidth) + BOUNDARY_OFFSET, rand.nextInt(maxHeight) + BOUNDARY_OFFSET);
          */
 
+        g.setColor(Color.BLACK);
+
+        // draw vertical lines
+        for (int yLine = 0; yLine <= width; yLine += SCALE) {
+            g.drawLine(yLine, 0, yLine, height * SCALE);
+        }
+
+        // draw horizontal lines
+        for (int xLine = 0; xLine <= width; xLine += SCALE) {
+            g.drawLine(0, xLine, width * SCALE, xLine);
+        }
+
+        // draw snake
+        g.setColor(Color.yellow);
+        g.fillRect(0 * SCALE, 0 * SCALE, SCALE, SCALE);
     }
 
 }

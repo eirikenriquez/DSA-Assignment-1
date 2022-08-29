@@ -23,18 +23,25 @@ public class SnakeController implements KeyListener {
     public void keyPressed(KeyEvent ke) {
         int key = ke.getKeyCode();
 
-        // Netbeans suggested to write it like this instead of a regular switch statement...
         switch (key) {
-            case KeyEvent.VK_LEFT, KeyEvent.VK_A ->
+            case KeyEvent.VK_LEFT:
+            case KeyEvent.VK_A:
                 board.setDirection(Direction.LEFT);
-            case KeyEvent.VK_RIGHT, KeyEvent.VK_D ->
+                break;
+            case KeyEvent.VK_RIGHT:
+            case KeyEvent.VK_D:
                 board.setDirection(Direction.RIGHT);
-            case KeyEvent.VK_UP, KeyEvent.VK_W ->
+                break;
+            case KeyEvent.VK_UP:
+            case KeyEvent.VK_W:
                 board.setDirection(Direction.UP);
-            case KeyEvent.VK_DOWN, KeyEvent.VK_S ->
+                break;
+            case KeyEvent.VK_DOWN:
+            case KeyEvent.VK_S:
                 board.setDirection(Direction.DOWN);
-            default -> {
-            }
+                break;
+            default:
+                break;
         }
     }
 
