@@ -12,10 +12,8 @@ import javax.swing.JTextArea;
  */
 public class Board extends JPanel {
 
-    private static final int BOUNDARY_OFFSET = 50;
     private static final int MAX_NUMBERS = 10;
     private final Random rand;
-    private final SnakeController snakeController;
     private final LinkedList<Character> snake;
     private final int maxWidth;
     private final int maxHeight;
@@ -27,8 +25,8 @@ public class Board extends JPanel {
 
     public Board(int width, int height) {
         this.rand = new Random();
-        this.maxWidth = width - (BOUNDARY_OFFSET * 2);
-        this.maxHeight = height - (BOUNDARY_OFFSET * 2);
+        this.maxWidth = width;
+        this.maxHeight = height;
         addKeyListener(new SnakeController(this));
         this.snake = new LinkedList<>();
         generateLetter();
@@ -68,6 +66,7 @@ public class Board extends JPanel {
 
         g.drawString(letter + "", rand.nextInt(maxWidth) + BOUNDARY_OFFSET, rand.nextInt(maxHeight) + BOUNDARY_OFFSET);
          */
+
     }
 
 }
