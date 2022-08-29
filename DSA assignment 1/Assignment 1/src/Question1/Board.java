@@ -22,6 +22,7 @@ public class Board extends JPanel {
     private Direction direction;
     private int x;
     private int y;
+    private int numbers;
     private char letter;
 
     public Board(int width, int height) {
@@ -58,8 +59,6 @@ public class Board extends JPanel {
     }
 
     private void draw(Graphics g) {
-        System.out.println("asdasd");
-
         // Draw initial 10 numbers
         for (int i = 0; i < MAX_NUMBERS; i++) {
             g.drawString(RANDOM.nextInt(10) + "", RANDOM.nextInt(maxWidth) + BOUNDARY_OFFSET, RANDOM.nextInt(maxHeight) + BOUNDARY_OFFSET);
