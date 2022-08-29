@@ -5,11 +5,15 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import sun.java2d.loops.DrawRect;
 
 /**
+ * This is a very nasty class that violates Single Responsibility Principle and
+ * probably more... But, c'mon this assignment is really difficult :c
  *
  * @author eirikenriquez
  */
@@ -21,12 +25,14 @@ public class Board extends JPanel {
     private static final int BOARD_HEIGHT = 600;
     private static final int MAX_X = BOARD_WIDTH / SCALE;
     private static final int MAX_Y = BOARD_HEIGHT / SCALE;
+    private static final int DELAY = 100;
     private final Random rand;
     private final LinkedList<Character> snake;
     private LinkedList<Integer> numbers;
     private char letter;
     private int letterX;
     private int letterY;
+    private boolean gameOver = false;
 
     public Board() {
         setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
@@ -80,14 +86,19 @@ public class Board extends JPanel {
     }
 
     private void draw(Graphics g) {
-        // draw snake
-        drawSnake(g);
+        if (!gameOver) {
+            drawNumbers(g);
+            drawLetter(g);
 
-        // draw first 10 numbers
-        drawFirstNumbers(g);
+            drawSnake(g);
+            moveSnake();
 
-        // draw letter (food)
-        drawLetter(g);
+            checkCollision();
+        }
+    }
+
+    private void checkCollision() {
+
     }
 
     private void drawSnake(Graphics g) {
@@ -95,8 +106,8 @@ public class Board extends JPanel {
 
         Node node = snake.getNode(0);
         while (node != null) {
-            int x = (node.x * SCALE + 1) + SCALE;
-            int y = (node.y * SCALE + 1) + SCALE;
+            int x = convertPosition(node.x);
+            int y = convertPosition(node.y);
 
             g.drawString(node.data.toString(), x, y);
             node = node.next;
@@ -108,50 +119,66 @@ public class Board extends JPanel {
         while (node != null) {
             switch (node.direction) {
                 case LEFT:
-
+                    node.x--;
                     break;
                 case RIGHT:
-
+                    node.x++;
                     break;
                 case UP:
-
+                    node.y--;
                     break;
                 case DOWN:
-
+                    node.y++;
                     break;
                 default:
-                    throw new AssertionError();
+                    break;
             }
             node = node.next;
         }
+
+        try {
+            Thread.sleep(DELAY);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        repaint();
     }
 
-    private void drawFirstNumbers(Graphics g) {
+    private void drawNumbers(Graphics g) {
         g.setColor(Color.RED);
 
-        for (int i = 0; i < MAX_NUMBERS; i++) {
-            int num = rand.nextInt(10);
-            int x = rand.nextInt(MAX_X);
-            int y = rand.nextInt(MAX_Y);
-            int xToDisplay = ((x * SCALE + 1) + SCALE);
-            int yToDisplay = ((y * SCALE + 1) + SCALE);
+        if (numbers.size == 0) {
+            // populate the numbers list
+            for (int i = 0; i < MAX_NUMBERS; i++) {
+                int num = rand.nextInt(10);
+                int x = rand.nextInt(MAX_X);
+                int y = rand.nextInt(MAX_Y);
 
-            g.drawString(Integer.toString(num), xToDisplay, yToDisplay);
+                g.drawString(Integer.toString(num), convertPosition(x), convertPosition(y));
 
-            numbers.add(num);
-            Node node = numbers.getNode(i);
-            node.x = x;
-            node.y = y;
+                numbers.add(num);
+                Node node = numbers.getNode(i);
+                node.x = x;
+                node.y = y;
+            }
+        } else {
+            // display existing numbers list
+            Node node = numbers.getNode(0);
+            while (node != null) {
+                g.drawString(Integer.toString((int) node.data), convertPosition(node.x), convertPosition(node.y));
+                node = node.next;
+            }
         }
 
     }
 
     private void drawLetter(Graphics g) {
-        int x = ((letterX * SCALE + 1) + SCALE);
-        int y = ((letterY * SCALE + 1) + SCALE);
-
         g.setColor(Color.YELLOW);
-        g.drawString(Character.toString(letter), x, y);
+        g.drawString(Character.toString(letter), convertPosition(letterX), convertPosition(letterY));
+    }
+
+    private int convertPosition(int position) {
+        return (position * SCALE + 1) + SCALE;
     }
 
 }
