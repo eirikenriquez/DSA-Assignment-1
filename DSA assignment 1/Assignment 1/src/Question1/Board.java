@@ -12,11 +12,11 @@ import javax.swing.JTextArea;
  */
 public class Board extends JPanel {
 
-    private static final Random RANDOM = new Random();
     private static final int BOUNDARY_OFFSET = 50;
     private static final int MAX_NUMBERS = 10;
+    private final Random rand;
     private final SnakeController snakeController;
-    private final Snake snake;
+    private final LinkedList<Character> snake;
     private final int maxWidth;
     private final int maxHeight;
     private Direction direction;
@@ -26,15 +26,16 @@ public class Board extends JPanel {
     private char letter;
 
     public Board(int width, int height) {
+        this.rand = new Random();
         this.maxWidth = width - (BOUNDARY_OFFSET * 2);
         this.maxHeight = height - (BOUNDARY_OFFSET * 2);
-        this.snakeController = new SnakeController(this);
-        this.snake = new Snake();
+        addKeyListener(new SnakeController(this));
+        this.snake = new LinkedList<>();
         generateLetter();
     }
 
     private void generateLetter() {
-        if (RANDOM.nextBoolean()) {
+        if (rand.nextBoolean()) {
             generateLowercase();
         } else {
             generateUppercase();
@@ -42,11 +43,11 @@ public class Board extends JPanel {
     }
 
     private void generateLowercase() {
-        letter = (char) (RANDOM.nextInt(26) + 'a');
+        letter = (char) (rand.nextInt(26) + 'a');
     }
 
     private void generateUppercase() {
-        letter = (char) (RANDOM.nextInt(26) + 'A');
+        letter = (char) (rand.nextInt(26) + 'A');
     }
 
     public void setDirection(Direction direction) {
@@ -59,12 +60,14 @@ public class Board extends JPanel {
     }
 
     private void draw(Graphics g) {
+        /*
         // Draw initial 10 numbers
         for (int i = 0; i < MAX_NUMBERS; i++) {
-            g.drawString(RANDOM.nextInt(10) + "", RANDOM.nextInt(maxWidth) + BOUNDARY_OFFSET, RANDOM.nextInt(maxHeight) + BOUNDARY_OFFSET);
+            g.drawString(rand.nextInt(10) + "", rand.nextInt(maxWidth) + BOUNDARY_OFFSET, rand.nextInt(maxHeight) + BOUNDARY_OFFSET);
         }
 
-        g.drawString(letter + "", RANDOM.nextInt(maxWidth) + BOUNDARY_OFFSET, RANDOM.nextInt(maxHeight) + BOUNDARY_OFFSET);
+        g.drawString(letter + "", rand.nextInt(maxWidth) + BOUNDARY_OFFSET, rand.nextInt(maxHeight) + BOUNDARY_OFFSET);
+         */
     }
 
 }
