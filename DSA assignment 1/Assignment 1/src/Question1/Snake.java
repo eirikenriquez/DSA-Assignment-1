@@ -1,11 +1,15 @@
 package Question1;
 
-import java.util.Random;
-
 /**
  *
  * @author eirikenriquez
  */
 public class Snake {
+
+    private static final char HEAD = '@';
+
+    public Snake() {
+
+    }
 
 }
