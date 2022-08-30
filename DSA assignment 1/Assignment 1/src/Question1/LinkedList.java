@@ -16,7 +16,7 @@ public class LinkedList<E> {
 
     public void add(E data) {
         Node newNode = new Node();
-        newNode.data = data;
+        newNode.data = (Comparable) data;
 
         if (head == null) {
             head = newNode;
@@ -30,7 +30,7 @@ public class LinkedList<E> {
 
     public void addInOrder(E data) {
         Node newNode = new Node();
-        newNode.data = data;
+        newNode.data = (Comparable) data;
 
         if (head == null) {
             head = newNode;
