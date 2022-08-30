@@ -23,6 +23,7 @@ public class LinkedList<E> {
         } else {
             Node tail = getTail(head);
             tail.next = newNode;
+            newNode.prev = tail;
         }
 
         size++;
@@ -35,7 +36,6 @@ public class LinkedList<E> {
         if (head == null) {
             head = newNode;
             size++;
-//            printLinkedList();
             return;
         }
 
@@ -43,34 +43,22 @@ public class LinkedList<E> {
         if (size == 1) {
             if (head.compareTo(newNode) > 0) {
                 newNode.next = head;
+                head.prev = newNode;
                 head = newNode;
                 size++;
-
-//                printLinkedList();
                 return;
             }
         }
 
         addInOrder(head, newNode);
-
-//        printLinkedList();
     }
 
-    // I know that we were taught in P1 that multiple return statements are a no-no but,
-    // I think it's more readable than a nested if statement or an if-else statement.
     private void addInOrder(Node current, Node newNode) {
         // if newNode is smaller than head
         if (current == head && current.compareTo(newNode) > 0) {
             newNode.next = current;
+            current.prev = newNode;
             head = newNode;
-            size++;
-            return;
-        }
-
-        // if newNode is between the head and the tail
-        if (current.next != null && current.compareTo(newNode) < 0 && current.next.compareTo(newNode) > 0) {
-            newNode.next = current.next;
-            current.next = newNode;
             size++;
             return;
         }
@@ -78,12 +66,39 @@ public class LinkedList<E> {
         // if newNode is bigger than tail
         if (current.compareTo(newNode) < 0 && current.next == null) {
             current.next = newNode;
+            newNode.prev = current;
+            size++;
+            return;
+        }
+
+        // if newNode is between the head and the tail
+        if (current.next != null && current.compareTo(newNode) < 0 && current.next.compareTo(newNode) > 0) {
+            newNode.next = current.next;
+            newNode.prev = current;
+            current.next = newNode;
             size++;
             return;
         }
 
         addInOrder(current.next, newNode);
 
+    }
+
+    // bad bubble sort
+    public void sort(Node node, int timesRan) {
+        if (node.next == null && timesRan < (size * size)) {
+            sort(head, timesRan + 1);
+        }
+
+        if (node.next != null) {
+            if (node.compareTo(node.next) > 0) {
+                E temp = (E) node.data;
+                node.data = node.next.data;
+                node.next.data = (Comparable) temp;
+            }
+
+            sort(node.next, timesRan + 1);
+        }
     }
 
     public Boolean contains(Node node) {

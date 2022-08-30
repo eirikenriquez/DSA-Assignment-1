@@ -75,8 +75,11 @@ public class Board extends JPanel {
     }
 
     public void setDirection(Direction direction) {
-        Node head = snake.getNode(0);
-        head.direction = direction;
+        Node node = snake.getNode(0);
+        while (node != null) {
+            node.direction = direction;
+            node = node.next;
+        }
     }
 
     @Override
@@ -92,17 +95,23 @@ public class Board extends JPanel {
 
             drawSnake(g);
             moveSnake();
+            wrapSnake();
 
-            checkCollision();
+            checkFoodEaten();
+
         }
     }
 
-    private void checkCollision() {
+    private void checkFoodEaten() {
+        Node head = snake.getNode(0);
 
+        if (head.x == letterX && head.y == letterY) {
+            snake.addInOrder(letter);
+        }
     }
 
     private void drawSnake(Graphics g) {
-        g.setColor(Color.GREEN);
+        g.setColor(Color.WHITE);
 
         Node node = snake.getNode(0);
         while (node != null) {
@@ -117,18 +126,12 @@ public class Board extends JPanel {
     private void moveSnake() {
         Node node = snake.getNode(0);
         while (node != null) {
-            switch (node.direction) {
-                case LEFT:
-                    node.x--;
+            switch (node.direction.axis) {
+                case 'x':
+                    node.x += node.direction.positionChange;
                     break;
-                case RIGHT:
-                    node.x++;
-                    break;
-                case UP:
-                    node.y--;
-                    break;
-                case DOWN:
-                    node.y++;
+                case 'y':
+                    node.y += node.direction.positionChange;
                     break;
                 default:
                     break;
@@ -173,12 +176,36 @@ public class Board extends JPanel {
     }
 
     private void drawLetter(Graphics g) {
-        g.setColor(Color.YELLOW);
+        g.setColor(Color.GREEN);
         g.drawString(Character.toString(letter), convertPosition(letterX), convertPosition(letterY));
     }
 
     private int convertPosition(int position) {
-        return (position * SCALE + 1) + SCALE;
+        return (position * SCALE) + SCALE;
+    }
+
+    private void wrapSnake() {
+        Node node = snake.getNode(0);
+
+        while (node != null) {
+            if (node.x < 0) {
+                node.x = MAX_X;
+            }
+
+            if (node.x > MAX_X) {
+                node.x = 0;
+            }
+
+            if (node.y < 0) {
+                node.y = MAX_Y;
+            }
+
+            if (node.y > MAX_Y) {
+                node.y = 0;
+            }
+
+            node = node.next;
+        }
     }
 
 }
