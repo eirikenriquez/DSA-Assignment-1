@@ -124,19 +124,22 @@ public class Board extends JPanel {
     }
 
     private void moveSnake() {
-        Node node = snake.getNode(0);
-        while (node != null) {
-            switch (node.direction.axis) {
+        Node head = snake.getNode(0);
+        Node current = head;
+
+        // check for not head
+        while (current != null) {
+            switch (current.direction.axis) {
                 case 'x':
-                    node.x += node.direction.positionChange;
+                    current.x += current.direction.positionChange;
                     break;
                 case 'y':
-                    node.y += node.direction.positionChange;
+                    current.y += current.direction.positionChange;
                     break;
                 default:
                     break;
             }
-            node = node.next;
+            current = current.next;
         }
 
         try {

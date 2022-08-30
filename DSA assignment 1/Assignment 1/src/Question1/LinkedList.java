@@ -29,6 +29,20 @@ public class LinkedList<E> {
         size++;
     }
 
+    private Node initNewNode(Node newNode, Node previous) {
+        newNode.direction = previous.direction;
+
+        if (previous.direction.axis == 'x') {
+            newNode.x = previous.x - previous.direction.positionChange;
+            newNode.y = previous.y;
+        } else {
+            newNode.x = previous.x;
+            newNode.y = previous.y - previous.direction.positionChange;
+        }
+
+        return newNode;
+    }
+
     public void addInOrder(E data) {
         Node newNode = new Node();
         newNode.data = (Comparable) data;
@@ -41,13 +55,19 @@ public class LinkedList<E> {
 
         // No need to go through the whole list if there is only one comparison...
         if (size == 1) {
-            if (head.compareTo(newNode) > 0) {
+            if (head.compareTo(newNode) >= 0) {
                 newNode.next = head;
                 head.prev = newNode;
                 head = newNode;
                 size++;
-                return;
+            } else {
+                newNode = initNewNode(newNode, head);
+                head.next = newNode;
+                newNode.prev = head;
+                size++;
             }
+
+            return;
         }
 
         addInOrder(head, newNode);
@@ -65,6 +85,7 @@ public class LinkedList<E> {
 
         // if newNode is bigger than tail
         if (current.compareTo(newNode) < 0 && current.next == null) {
+            newNode = initNewNode(newNode, current);
             current.next = newNode;
             newNode.prev = current;
             size++;
@@ -72,7 +93,8 @@ public class LinkedList<E> {
         }
 
         // if newNode is between the head and the tail
-        if (current.next != null && current.compareTo(newNode) < 0 && current.next.compareTo(newNode) > 0) {
+        if (current.next != null && current.compareTo(newNode) < 0 && current.next.compareTo(newNode) >= 0) {
+            newNode = initNewNode(newNode, current);
             newNode.next = current.next;
             newNode.prev = current;
             current.next = newNode;
