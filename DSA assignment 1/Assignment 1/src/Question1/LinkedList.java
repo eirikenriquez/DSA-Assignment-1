@@ -29,7 +29,7 @@ public class LinkedList<E> {
         size++;
     }
 
-    private Node initNewNode(Node newNode, Node previous) {
+    private Node updateNode(Node newNode, Node previous) {
         if (previous.direction == null) {
             return newNode;
         }
@@ -61,11 +61,12 @@ public class LinkedList<E> {
         if (size == 1) {
             if (head.compareTo(newNode) >= 0) {
                 newNode.next = head;
+                head = updateNode(head, newNode);
                 head.prev = newNode;
                 head = newNode;
                 size++;
             } else {
-                newNode = initNewNode(newNode, head);
+                newNode = updateNode(newNode, head);
                 head.next = newNode;
                 newNode.prev = head;
                 size++;
@@ -80,6 +81,7 @@ public class LinkedList<E> {
     private void addInOrder(Node current, Node newNode) {
         // if newNode is smaller than head
         if (current == head && current.compareTo(newNode) > 0) {
+            current = updateNode(current, newNode);
             newNode.next = current;
             current.prev = newNode;
             head = newNode;
@@ -89,7 +91,7 @@ public class LinkedList<E> {
 
         // if newNode is bigger than tail
         if (current.compareTo(newNode) < 0 && current.next == null) {
-            newNode = initNewNode(newNode, current);
+            newNode = updateNode(newNode, current);
             current.next = newNode;
             newNode.prev = current;
             size++;
@@ -98,7 +100,8 @@ public class LinkedList<E> {
 
         // if newNode is between the head and the tail
         if (current.next != null && current.compareTo(newNode) <= 0 && current.next.compareTo(newNode) >= 0) {
-            newNode = initNewNode(newNode, current);
+            newNode = updateNode(newNode, current);
+            current.next = updateNode(current.next, newNode);
             newNode.next = current.next;
             current.next.prev = newNode;
             newNode.prev = current;
