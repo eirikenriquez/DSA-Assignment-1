@@ -23,6 +23,11 @@ public class Queue<E> {
         return (E) node.data;
     }
 
+    public E first() {
+        Node node = queue.getNode(0);
+        return (E) node.data;
+    }
+
     public int getSize() {
         return queue.size;
     }

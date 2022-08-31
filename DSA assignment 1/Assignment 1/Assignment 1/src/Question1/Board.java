@@ -23,15 +23,15 @@ public class Board extends JPanel {
     private static final int BOARD_HEIGHT = 600;
     private static final int MAX_X = BOARD_WIDTH / SCALE;
     private static final int MAX_Y = BOARD_HEIGHT / SCALE;
-    private static final int DELAY = 100;
+    public static final int DELAY = 40;
     private final Random rand;
     public final LinkedList<Character> snake;
-    private LinkedList<Integer> numbers;
+    private final LinkedList<Integer> numbers;
+    private final Queue<Integer> xDirectionChanges;
+    private final Queue<Integer> yDirectionChanges;
     private char letter;
     private int letterX;
     private int letterY;
-    private int directionChangeX;
-    private int directionChangeY;
     private boolean gameOver = false;
 
     public Board() {
@@ -41,7 +41,10 @@ public class Board extends JPanel {
 
         this.rand = new Random();
         this.snake = new LinkedList<>();
-        numbers = new LinkedList<>();
+        this.numbers = new LinkedList<>();
+        this.xDirectionChanges = new Queue<>();
+        this.yDirectionChanges = new Queue<>();
+
         generateLetter();
         generateSnake();
 
@@ -77,11 +80,13 @@ public class Board extends JPanel {
 
     public void setDirection(Direction direction) {
         Node head = snake.getNode(0);
-        directionChangeX = head.x;
-        directionChangeY = head.y;
+
+        if (snake.size > 1) {
+            xDirectionChanges.enqueue(head.x);
+            yDirectionChanges.enqueue(head.y);
+        }
 
         setDirection(direction, head);
-
     }
 
     private void setDirection(Direction direction, Node node) {
@@ -92,13 +97,21 @@ public class Board extends JPanel {
         Node head = snake.getNode(0);
         Node node = head.next;
 
+        System.out.println("x" + xDirectionChanges.first());
+        System.out.println("Y" + yDirectionChanges.first());
+
         while (node != null) {
-            if (node.x == directionChangeX && node.y == directionChangeY) {
+            if (node.x == xDirectionChanges.first() && node.y == yDirectionChanges.first()) {
                 setDirection(node.prev.direction, node);
+                if (node.next == null) {
+                    xDirectionChanges.dequeue();
+                    yDirectionChanges.dequeue();
+                }
             }
 
             node = node.next;
         }
+
     }
 
     @Override
@@ -172,10 +185,6 @@ public class Board extends JPanel {
         Node head = snake.getNode(0);
         Node current = head;
 
-        if (snake.size > 0) {
-            checkDirection();
-        }
-
         while (current != null) {
             switch (current.direction.axis) {
                 case 'x':
@@ -188,6 +197,10 @@ public class Board extends JPanel {
                     break;
             }
             current = current.next;
+        }
+
+        if (snake.size > 1 && xDirectionChanges.getSize() != 0 && yDirectionChanges.getSize() != 0) {
+            checkDirection();
         }
 
         try {
