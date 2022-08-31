@@ -131,10 +131,14 @@ public class Board extends JPanel {
         while (current != null) {
             switch (current.direction.axis) {
                 case 'x':
-                    current.x += current.direction.positionChange;
+                    while (current.x != head.x) {
+                        current.x += current.direction.positionChange;
+                    }
                     break;
                 case 'y':
-                    current.y += current.direction.positionChange;
+                    while (current.y != head.y) {
+                        current.y += current.direction.positionChange;
+                    }
                     break;
                 default:
                     break;
