@@ -30,6 +30,10 @@ public class LinkedList<E> {
     }
 
     private Node initNewNode(Node newNode, Node previous) {
+        if (previous.direction == null) {
+            return newNode;
+        }
+
         newNode.direction = previous.direction;
 
         if (previous.direction.axis == 'x') {
@@ -93,9 +97,10 @@ public class LinkedList<E> {
         }
 
         // if newNode is between the head and the tail
-        if (current.next != null && current.compareTo(newNode) < 0 && current.next.compareTo(newNode) >= 0) {
+        if (current.next != null && current.compareTo(newNode) <= 0 && current.next.compareTo(newNode) >= 0) {
             newNode = initNewNode(newNode, current);
             newNode.next = current.next;
+            current.next.prev = newNode;
             newNode.prev = current;
             current.next = newNode;
             size++;
@@ -106,7 +111,8 @@ public class LinkedList<E> {
 
     }
 
-    // bad bubble sort
+    // this is a bad bubble sort
+    // this is just used for testing but not in actual program...
     public void sort(Node node, int timesRan) {
         if (node.next == null && timesRan < (size * size)) {
             sort(head, timesRan + 1);
@@ -143,7 +149,13 @@ public class LinkedList<E> {
     }
 
     private void remove(Node current, Node target) {
+        if (current.next.next == null) {
+            removeFromTail();
+            return;
+        }
+
         if (current.next != null && current.next.equals(target)) {
+            current.next.next.prev = current;
             current.next = current.next.next;
             size--;
         } else {

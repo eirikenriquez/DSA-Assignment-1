@@ -1,7 +1,5 @@
 package Question1;
 
-import javax.swing.JFrame;
-
 /**
  *
  * @author eirikenriquez

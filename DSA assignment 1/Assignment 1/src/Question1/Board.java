@@ -1,15 +1,13 @@
 package Question1;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import sun.java2d.loops.DrawRect;
 
 /**
  * This is a very nasty class that violates Single Responsibility Principle and
@@ -27,16 +25,17 @@ public class Board extends JPanel {
     private static final int MAX_Y = BOARD_HEIGHT / SCALE;
     private static final int DELAY = 100;
     private final Random rand;
-    private final LinkedList<Character> snake;
+    public final LinkedList<Character> snake;
     private LinkedList<Integer> numbers;
     private char letter;
     private int letterX;
     private int letterY;
+    private int directionChangeX;
+    private int directionChangeY;
     private boolean gameOver = false;
 
     public Board() {
         setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
-        addKeyListener(new SnakeController(this));
         setFocusable(true);
         setBackground(Color.BLACK);
 
@@ -45,6 +44,8 @@ public class Board extends JPanel {
         numbers = new LinkedList<>();
         generateLetter();
         generateSnake();
+
+        addKeyListener(new SnakeController(this));
     }
 
     private void generateSnake() {
@@ -75,9 +76,27 @@ public class Board extends JPanel {
     }
 
     public void setDirection(Direction direction) {
-        Node node = snake.getNode(0);
+        Node head = snake.getNode(0);
+        directionChangeX = head.x;
+        directionChangeY = head.y;
+
+        setDirection(direction, head);
+
+    }
+
+    private void setDirection(Direction direction, Node node) {
+        node.direction = direction;
+    }
+
+    private void checkDirection() {
+        Node head = snake.getNode(0);
+        Node node = head.next;
+
         while (node != null) {
-            node.direction = direction;
+            if (node.x == directionChangeX && node.y == directionChangeY) {
+                setDirection(node.prev.direction, node);
+            }
+
             node = node.next;
         }
     }
@@ -98,16 +117,42 @@ public class Board extends JPanel {
             wrapSnake();
 
             checkFoodEaten();
-
+        } else {
+            JOptionPane.showMessageDialog(this, "Game Over!");
+            System.exit(0);
         }
     }
 
     private void checkFoodEaten() {
         Node head = snake.getNode(0);
 
+        // if good apple
         if (head.x == letterX && head.y == letterY) {
             snake.addInOrder(letter);
+            generateLetter();
         }
+
+        // if bad apple
+        Node currentNumber = numbers.getNode(0);
+        while (currentNumber != null) {
+            if (head.x == currentNumber.x && head.y == currentNumber.y) {
+                Node toRemove = snake.getNode((int) currentNumber.data);
+
+                if ((int) currentNumber.data > snake.size - 1) {
+                    snake.removeFromTail();
+                } else if ((int) currentNumber.data == 0) {
+                    snake.removeFromHead();
+                } else {
+                    snake.remove(toRemove);
+                }
+
+                if (snake.size == 0) {
+                    gameOver = true;
+                }
+            }
+            currentNumber = currentNumber.next;
+        }
+
     }
 
     private void drawSnake(Graphics g) {
@@ -127,18 +172,17 @@ public class Board extends JPanel {
         Node head = snake.getNode(0);
         Node current = head;
 
-        // check for not head
+        if (snake.size > 0) {
+            checkDirection();
+        }
+
         while (current != null) {
             switch (current.direction.axis) {
                 case 'x':
-                    while (current.x != head.x) {
-                        current.x += current.direction.positionChange;
-                    }
+                    current.x += current.direction.positionChange;
                     break;
                 case 'y':
-                    while (current.y != head.y) {
-                        current.y += current.direction.positionChange;
-                    }
+                    current.y += current.direction.positionChange;
                     break;
                 default:
                     break;
