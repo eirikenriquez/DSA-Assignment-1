@@ -18,7 +18,6 @@ public class Controller implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String action = e.getActionCommand();
-        System.out.println(action);
 
         switch (action) {
             case "Synchronized":

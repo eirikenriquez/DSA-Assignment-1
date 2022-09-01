@@ -29,7 +29,7 @@ public class Panel extends JPanel {
 
         setPreferredSize(new Dimension(panelWidth, PANEL_HEIGHT));
         setFocusable(true);
-        setBackground(Color.RED); // blood water
+        setBackground(new Color(102, 51, 0)); // the water is sewage water
 
         initButtons();
 
