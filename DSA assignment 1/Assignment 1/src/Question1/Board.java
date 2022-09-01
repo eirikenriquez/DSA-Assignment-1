@@ -215,7 +215,7 @@ public class Board extends JPanel {
     }
 
     private int convertPosition(int position) {
-        return (position * SCALE);
+        return (position * SCALE) + (SCALE / 2);
     }
 
     private void wrapSnake() {
