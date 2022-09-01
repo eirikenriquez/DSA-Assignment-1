@@ -73,7 +73,6 @@ public class Panel extends JPanel {
         super.paintComponent(g);
         updateBoats(g);
         g.drawImage(island.currentImage, island.x, island.y, this);
-        checkCollision(g);
     }
 
     private void drawBoats(Graphics g) {
@@ -89,20 +88,19 @@ public class Panel extends JPanel {
             if (boats[i].island.boatComing) {
                 g.drawImage(boats[i].image, boats[i].x, boats[i].y, this);
             }
+            checkCollision(g, boats[i]);
             island.currentImage = boats[i].island.currentImage;
         }
 
         repaint();
     }
 
-    private void checkCollision(Graphics g) {
+    private void checkCollision(Graphics g, Boat current) {
         for (int i = 0; i < BOAT_AMOUNT; i++) {
-            for (int j = 0; j < BOAT_AMOUNT; j++) {
-                if (boats[i].island.boatComing && boats[j].island.boatComing) {
-                    g.setColor(Color.WHITE);
-                    g.setFont(new Font(g.getFont().getName(), Font.BOLD, 50));
-                    g.drawString("CRASHED!", (int) (panelWidth / 2.5), PANEL_HEIGHT / 2);
-                }
+            if (boats[i] != current && boats[i].sailing && current.sailing) {
+                g.setColor(Color.WHITE);
+                g.setFont(new Font(g.getFont().getName(), Font.BOLD, 50));
+                g.drawString("CRASHED!", (int) (panelWidth / 2.5), PANEL_HEIGHT / 2);
             }
         }
     }

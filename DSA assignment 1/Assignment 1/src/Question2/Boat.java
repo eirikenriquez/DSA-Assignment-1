@@ -5,7 +5,6 @@ import java.awt.Image;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.Observable;
 import javax.swing.ImageIcon;
 
 /**
@@ -21,6 +20,7 @@ public class Boat extends Thread {
     public final Island island;
     private final int delay;
     public boolean landed;
+    public boolean sailing;
     public boolean syncSetting;
     public int x;
     public int y;
@@ -79,12 +79,14 @@ public class Boat extends Thread {
 
     private void sailBoat() {
         island.boatComing = true;
+        this.sailing = true;
 
         do {
             move();
         } while (!(landed = this.x == island.x && this.y == island.y));
 
         island.currentImage = island.withShip;
+        this.sailing = false;
 
         try {
             Thread.sleep(INTERVAL);
