@@ -11,7 +11,6 @@ public class Node<E extends Comparable> implements Comparable<Node> {
     public Node prev;
     public int x;
     public int y;
-    public Direction direction;
 
     public Node() {
         this.data = null;
@@ -19,7 +18,6 @@ public class Node<E extends Comparable> implements Comparable<Node> {
         this.prev = null;
         this.x = 0;
         this.y = 0;
-        this.direction = null;
     }
 
     public boolean equals(Node node) {

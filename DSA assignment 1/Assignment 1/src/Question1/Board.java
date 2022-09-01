@@ -27,6 +27,7 @@ public class Board extends JPanel {
     private final Random rand;
     public final LinkedList<Character> snake;
     private final LinkedList<Integer> numbers;
+    private Direction direction;
     private char letter;
     private int letterX;
     private int letterY;
@@ -49,7 +50,7 @@ public class Board extends JPanel {
     private void generateSnake() {
         snake.add('@');
         Node head = snake.getNode(0);
-        head.direction = Direction.RIGHT;
+        direction = Direction.RIGHT;
         head.x = 0;
         head.y = 0;
     }
@@ -74,12 +75,7 @@ public class Board extends JPanel {
     }
 
     public void setDirection(Direction direction) {
-        Node head = snake.getNode(0);
-        setDirection(direction, head);
-    }
-
-    private void setDirection(Direction direction, Node node) {
-        node.direction = direction;
+        this.direction = direction;
     }
 
     @Override
@@ -156,12 +152,12 @@ public class Board extends JPanel {
 
         while (current != null) {
             if (current == head) {
-                switch (head.direction.axis) {
+                switch (direction.axis) {
                     case 'x':
-                        head.x += head.direction.positionChange;
+                        head.x += direction.positionChange;
                         break;
                     case 'y':
-                        head.y += head.direction.positionChange;
+                        head.y += direction.positionChange;
                         break;
                     default:
                         break;

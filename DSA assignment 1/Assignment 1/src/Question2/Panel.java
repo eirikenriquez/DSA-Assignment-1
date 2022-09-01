@@ -2,7 +2,12 @@ package Question2;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.LayoutManager;
+import java.util.Observable;
+import java.util.Observer;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 /**
@@ -11,41 +16,94 @@ import javax.swing.JPanel;
  */
 public class Panel extends JPanel {
 
-    private static final int BOAT_HEIGHT = 43;
+    private static final int BOAT_WIDTH = 48; // the width of the image
+    private static final int PANEL_HEIGHT = 1000;
     private static final int BOAT_AMOUNT = 25;
-    private static final int PANEL_WIDTH = 1000;
-    private static final int PANEL_HEIGHT = BOAT_AMOUNT * BOAT_HEIGHT;
-    private final Island island;
-    private Boat[] boats;
+    private final int panelWidth;
+    public final Island island;
+    public Boat[] boats;
+    public boolean started;
 
     public Panel() {
-        setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
-        setFocusable(true);
-        this.setBackground(Color.BLUE);
+        this.panelWidth = BOAT_WIDTH * BOAT_AMOUNT;
 
-        this.island = new Island(900, 500);
+        setPreferredSize(new Dimension(panelWidth, PANEL_HEIGHT));
+        setFocusable(true);
+        setBackground(Color.RED); // blood water
+
+        initButtons();
+
+        this.island = new Island(panelWidth / 2, 100);
         initBoats();
+    }
+
+    private void initButtons() {
+        JButton synchronizedButton = new JButton("Synchronized");
+        JButton unSynchronizedButton = new JButton("Unsynchronized");
+
+        synchronizedButton.addActionListener(new Controller(this));
+        unSynchronizedButton.addActionListener(new Controller(this));
+
+        add(synchronizedButton);
+        add(unSynchronizedButton);
     }
 
     private void initBoats() {
         this.boats = new Boat[BOAT_AMOUNT];
 
         for (int i = 0; i < BOAT_AMOUNT; i++) {
-            this.boats[i] = new Boat(10, BOAT_HEIGHT * i + 1);
+            this.boats[i] = new Boat(this.island, BOAT_WIDTH * i + 1, 900);
+        }
+    }
+
+    public void changeSyncSetting(boolean syncSetting) {
+        if (!started) {
+            for (int i = 0; i < BOAT_AMOUNT; i++) {
+                boats[i].syncSetting = syncSetting;
+                boats[i].start();
+            }
+
+            started = true;
+            repaint();
         }
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(island.image, island.x, island.y, this);
-
-        drawBoats(g);
+        updateBoats(g);
+        g.drawImage(island.currentImage, island.x, island.y, this);
+        checkCollision(g);
     }
 
     private void drawBoats(Graphics g) {
         for (int i = 0; i < BOAT_AMOUNT; i++) {
             g.drawImage(boats[i].image, boats[i].x, boats[i].y, this);
+        }
+    }
+
+    private void updateBoats(Graphics g) {
+        drawBoats(g);
+
+        for (int i = 0; i < BOAT_AMOUNT; i++) {
+            if (boats[i].island.boatComing) {
+                g.drawImage(boats[i].image, boats[i].x, boats[i].y, this);
+            }
+            island.currentImage = boats[i].island.currentImage;
+        }
+
+        repaint();
+    }
+
+    private void checkCollision(Graphics g) {
+        for (int i = 0; i < BOAT_AMOUNT; i++) {
+            for (int j = 0; j < BOAT_AMOUNT; j++) {
+                if (boats[i].island.boatComing && boats[j].island.boatComing) {
+                    g.setColor(Color.WHITE);
+                    g.setFont(new Font(g.getFont().getName(), Font.BOLD, 50));
+                    g.drawString("CRASHED!", (int) (panelWidth / 2.5), PANEL_HEIGHT / 2);
+                }
+            }
         }
     }
 
