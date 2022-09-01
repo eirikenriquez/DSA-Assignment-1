@@ -29,24 +29,6 @@ public class LinkedList<E> {
         size++;
     }
 
-    private Node updateNode(Node newNode, Node previous) {
-        if (previous.direction == null) {
-            return newNode;
-        }
-
-        newNode.direction = previous.direction;
-
-        if (previous.direction.axis == 'x') {
-            newNode.x = previous.x - previous.direction.positionChange;
-            newNode.y = previous.y;
-        } else {
-            newNode.x = previous.x;
-            newNode.y = previous.y - previous.direction.positionChange;
-        }
-
-        return newNode;
-    }
-
     public void addInOrder(E data) {
         Node newNode = new Node();
         newNode.data = (Comparable) data;
@@ -61,12 +43,10 @@ public class LinkedList<E> {
         if (size == 1) {
             if (head.compareTo(newNode) >= 0) {
                 newNode.next = head;
-                head = updateNode(head, newNode);
                 head.prev = newNode;
                 head = newNode;
                 size++;
             } else {
-                newNode = updateNode(newNode, head);
                 head.next = newNode;
                 newNode.prev = head;
                 size++;
@@ -79,39 +59,27 @@ public class LinkedList<E> {
     }
 
     private void addInOrder(Node current, Node newNode) {
-        // if newNode is smaller than head
         if (current == head && current.compareTo(newNode) > 0) {
-            current = updateNode(current, newNode);
+            // if newNode is smaller than head
             newNode.next = current;
             current.prev = newNode;
             head = newNode;
             size++;
-            return;
-        }
-
-        // if newNode is bigger than tail
-        if (current.compareTo(newNode) < 0 && current.next == null) {
-            newNode = updateNode(newNode, current);
+        } else if (current.compareTo(newNode) < 0 && current.next == null) {
+            // if newNode is bigger than tail
             current.next = newNode;
             newNode.prev = current;
             size++;
-            return;
-        }
-
-        // if newNode is between the head and the tail
-        if (current.next != null && current.compareTo(newNode) <= 0 && current.next.compareTo(newNode) >= 0) {
-            newNode = updateNode(newNode, current);
-            current.next = updateNode(current.next, newNode);
+        } else if (current.next != null && current.compareTo(newNode) <= 0 && current.next.compareTo(newNode) >= 0) {
+            // if newNode is between the head and the tail
             newNode.next = current.next;
             current.next.prev = newNode;
             newNode.prev = current;
             current.next = newNode;
             size++;
-            return;
+        } else {
+            addInOrder(current.next, newNode);
         }
-
-        addInOrder(current.next, newNode);
-
     }
 
     // this is a bad bubble sort
@@ -154,10 +122,9 @@ public class LinkedList<E> {
     private void remove(Node current, Node target) {
         if (current.next.next == null) {
             removeFromTail();
-            return;
-        }
-
-        if (current.next != null && current.next.equals(target)) {
+        } else if (target == head) {
+            removeFromHead();
+        } else if (current.next != null && current.next.equals(target)) {
             current.next.next.prev = current;
             current.next = current.next.next;
             size--;

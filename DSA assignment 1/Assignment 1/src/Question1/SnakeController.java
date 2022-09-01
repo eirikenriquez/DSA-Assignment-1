@@ -2,8 +2,6 @@ package Question1;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -12,16 +10,10 @@ import java.util.logging.Logger;
 public class SnakeController implements KeyListener {
 
     private final Board board;
-    private final Node head;
-    private int previousX;
-    private int previousY;
     private int previousInput;
 
     public SnakeController(Board board) {
         this.board = board;
-        head = board.snake.getNode(0);
-        this.previousX = head.x;
-        this.previousY = head.y;
         this.previousInput = 0;
     }
 
@@ -31,13 +23,6 @@ public class SnakeController implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent ke) {
-        if (head.x == previousX && head.y == previousY) {
-            return;
-        }
-
-        previousX = head.x;
-        previousY = head.y;
-
         int key = ke.getKeyCode();
 
         switch (key) {

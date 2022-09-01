@@ -23,16 +23,13 @@ public class Board extends JPanel {
     private static final int BOARD_HEIGHT = 600;
     private static final int MAX_X = BOARD_WIDTH / SCALE;
     private static final int MAX_Y = BOARD_HEIGHT / SCALE;
-    public static final int DELAY = 40;
+    public static final int DELAY = 75;
     private final Random rand;
     public final LinkedList<Character> snake;
     private final LinkedList<Integer> numbers;
-    private final Queue<Integer> xDirectionChanges;
-    private final Queue<Integer> yDirectionChanges;
     private char letter;
     private int letterX;
     private int letterY;
-    private boolean gameOver = false;
 
     public Board() {
         setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
@@ -42,8 +39,6 @@ public class Board extends JPanel {
         this.rand = new Random();
         this.snake = new LinkedList<>();
         this.numbers = new LinkedList<>();
-        this.xDirectionChanges = new Queue<>();
-        this.yDirectionChanges = new Queue<>();
 
         generateLetter();
         generateSnake();
@@ -80,38 +75,11 @@ public class Board extends JPanel {
 
     public void setDirection(Direction direction) {
         Node head = snake.getNode(0);
-
-        if (snake.size > 1) {
-            xDirectionChanges.enqueue(head.x);
-            yDirectionChanges.enqueue(head.y);
-        }
-
         setDirection(direction, head);
     }
 
     private void setDirection(Direction direction, Node node) {
         node.direction = direction;
-    }
-
-    private void checkDirection() {
-        Node head = snake.getNode(0);
-        Node node = head.next;
-
-        System.out.println("x" + xDirectionChanges.first());
-        System.out.println("Y" + yDirectionChanges.first());
-
-        while (node != null) {
-            if (node.x == xDirectionChanges.first() && node.y == yDirectionChanges.first()) {
-                setDirection(node.prev.direction, node);
-                if (node.next == null) {
-                    xDirectionChanges.dequeue();
-                    yDirectionChanges.dequeue();
-                }
-            }
-
-            node = node.next;
-        }
-
     }
 
     @Override
@@ -121,19 +89,19 @@ public class Board extends JPanel {
     }
 
     private void draw(Graphics g) {
-        if (!gameOver) {
-            drawNumbers(g);
-            drawLetter(g);
+        drawNumbers(g);
+        drawLetter(g);
 
-            drawSnake(g);
-            moveSnake();
-            wrapSnake();
+        checkFoodEaten();
 
-            checkFoodEaten();
-        } else {
-            JOptionPane.showMessageDialog(this, "Game Over!");
-            System.exit(0);
-        }
+        drawSnake(g);
+        moveSnake();
+        wrapSnake();
+    }
+
+    private void gameOver() {
+        JOptionPane.showMessageDialog(this, "Game Over!");
+        System.exit(0);
     }
 
     private void checkFoodEaten() {
@@ -155,12 +123,13 @@ public class Board extends JPanel {
                     snake.removeFromTail();
                 } else if ((int) currentNumber.data == 0) {
                     snake.removeFromHead();
+                    gameOver();
                 } else {
                     snake.remove(toRemove);
                 }
 
                 if (snake.size == 0) {
-                    gameOver = true;
+                    gameOver();
                 }
             }
             currentNumber = currentNumber.next;
@@ -183,24 +152,25 @@ public class Board extends JPanel {
 
     private void moveSnake() {
         Node head = snake.getNode(0);
-        Node current = head;
+        Node current = snake.getNode(snake.size - 1);
 
         while (current != null) {
-            switch (current.direction.axis) {
-                case 'x':
-                    current.x += current.direction.positionChange;
-                    break;
-                case 'y':
-                    current.y += current.direction.positionChange;
-                    break;
-                default:
-                    break;
+            if (current == head) {
+                switch (head.direction.axis) {
+                    case 'x':
+                        head.x += head.direction.positionChange;
+                        break;
+                    case 'y':
+                        head.y += head.direction.positionChange;
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                current.x = current.prev.x;
+                current.y = current.prev.y;
             }
-            current = current.next;
-        }
-
-        if (snake.size > 1 && xDirectionChanges.getSize() != 0 && yDirectionChanges.getSize() != 0) {
-            checkDirection();
+            current = current.prev;
         }
 
         try {
