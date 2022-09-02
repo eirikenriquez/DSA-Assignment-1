@@ -29,6 +29,7 @@ public class Board extends JPanel {
     private char letter;
     private int letterX;
     private int letterY;
+    private boolean gameOver;
 
     public Board() {
         setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
@@ -38,6 +39,7 @@ public class Board extends JPanel {
         this.rand = new Random();
         this.snake = new LinkedList<>();
         this.numbers = new LinkedList<>();
+        this.gameOver = false;
 
         generateLetter();
         generateSnake();
@@ -83,19 +85,21 @@ public class Board extends JPanel {
     }
 
     private void draw(Graphics g) {
-        drawNumbers(g);
-        drawLetter(g);
+        if (!gameOver) {
+            drawNumbers(g);
+            drawLetter(g);
 
-        checkFoodEaten();
+            checkFoodEaten();
 
-        moveSnake();
-        drawSnake(g);
-        wrapSnake();
-    }
+            if (gameOver == true) {
+                JOptionPane.showMessageDialog(this, "Game Over!");
+                System.exit(0);
+            }
 
-    private void gameOver() {
-        JOptionPane.showMessageDialog(this, "Game Over!");
-        System.exit(0);
+            moveSnake();
+            drawSnake(g);
+            wrapSnake();
+        }
     }
 
     private void checkFoodEaten() {
@@ -111,20 +115,19 @@ public class Board extends JPanel {
         Node currentNumber = numbers.getNode(0);
         while (currentNumber != null) {
             if (head.x == currentNumber.x && head.y == currentNumber.y) {
+                if (snake.size <= 1 || (int) currentNumber.data == 0) {
+                    gameOver = true;
+                    return;
+                }
+
                 Node toRemove = snake.getNode((int) currentNumber.data);
 
                 if ((int) currentNumber.data > snake.size - 1) {
                     snake.removeFromTail();
-                } else if ((int) currentNumber.data == 0) {
-                    snake.removeFromHead();
-                    gameOver();
                 } else {
                     snake.remove(toRemove);
                 }
 
-                if (snake.size == 0) {
-                    gameOver();
-                }
             }
             currentNumber = currentNumber.next;
         }
