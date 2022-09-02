@@ -17,6 +17,9 @@ public class Panel extends JPanel {
     private static final int PANEL_HEIGHT = 1000;
     private static final int BOAT_AMOUNT = 25;
     private final int panelWidth;
+    private JButton synchronizedButton;
+    private JButton unSynchronizedButton;
+    private JButton resetButton;
     public Island island;
     public Boat[] boats;
     public boolean started;
@@ -44,13 +47,13 @@ public class Panel extends JPanel {
     }
 
     private void initButtons() {
-        JButton synchronizedButton = new JButton("Synchronized");
-        JButton unSynchronizedButton = new JButton("Unsynchronized");
-        JButton resetButton = new JButton("Reset");
+        this.resetButton = new JButton("Reset");
+        this.unSynchronizedButton = new JButton("Unsynchronized");
+        this.synchronizedButton = new JButton("Synchronized");
 
-        synchronizedButton.addActionListener(new Controller(this));
-        unSynchronizedButton.addActionListener(new Controller(this));
-        resetButton.addActionListener(new Controller(this));
+        this.synchronizedButton.addActionListener(new Controller(this));
+        this.unSynchronizedButton.addActionListener(new Controller(this));
+        this.resetButton.addActionListener(new Controller(this));
 
         add(synchronizedButton);
         add(unSynchronizedButton);
@@ -66,16 +69,14 @@ public class Panel extends JPanel {
     }
 
     public void changeSyncSetting(boolean syncSetting) {
-        if (started) {
-            return; // lock setting if simulation has started already...
-        }
-
         for (int i = 0; i < BOAT_AMOUNT; i++) {
             boats[i].syncSetting = syncSetting;
             boats[i].start();
         }
 
         started = true;
+        this.synchronizedButton.setEnabled(false);
+        this.unSynchronizedButton.setEnabled(false);
         repaint();
     }
 
