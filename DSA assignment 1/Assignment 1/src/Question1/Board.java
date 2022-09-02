@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 
 /**
  * This is a very nasty class that violates Single Responsibility Principle and
- * probably more, but gets the job done...
+ * probably more...
  *
  * @author eirikenriquez
  */
@@ -88,8 +88,8 @@ public class Board extends JPanel {
 
         checkFoodEaten();
 
-        drawSnake(g);
         moveSnake();
+        drawSnake(g);
         wrapSnake();
     }
 
