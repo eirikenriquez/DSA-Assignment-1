@@ -120,10 +120,10 @@ public class LinkedList<E> {
     }
 
     private void remove(Node current, Node target) {
-        if (current.next.next == null) {
-            removeFromTail();
-        } else if (target == head) {
+        if (target == head) {
             removeFromHead();
+        } else if (current.next.next == null) {
+            removeFromTail();
         } else if (current.next != null && current.next.equals(target)) {
             current.next.next.prev = current;
             current.next = current.next.next;
