@@ -1,7 +1,6 @@
 package Question2;
 
 import java.awt.Image;
-import javax.swing.ImageIcon;
 
 /**
  *
@@ -17,8 +16,8 @@ public class Island {
     public boolean boatComing;
 
     public Island(int x, int y) {
-        this.noShip = new ImageIcon("./images/land.png/").getImage();
-        this.withShip = new ImageIcon("./images/boat_land.png/").getImage();
+        this.noShip = Util.readImage("./images/land.png");
+        this.withShip = Util.readImage("./images/boat_land.png/");
         this.currentImage = noShip;
         this.x = x;
         this.y = y;

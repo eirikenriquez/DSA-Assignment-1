@@ -2,9 +2,6 @@ package Question2;
 
 import java.awt.Image;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.ImageIcon;
 
 /**
  *
@@ -25,7 +22,7 @@ public class Boat extends Thread {
 
     public Boat(Island island, int x, int y) {
         this.rand = new Random();
-        this.image = new ImageIcon("./images/boat.png/").getImage();
+        this.image = Util.readImage("./images/boat.png/");
         this.island = island;
         this.landed = false;
         this.x = x;
@@ -45,11 +42,7 @@ public class Boat extends Thread {
     private void runSynchronized() {
         synchronized (island) {
             while (island.boatComing) {
-                try {
-                    Thread.sleep(1); // wait if another boat is coming
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Boat.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                Util.pause(1);
             }
             sailBoat();
         }
@@ -57,11 +50,7 @@ public class Boat extends Thread {
 
     private void runUnSynchronized() {
         while (island.boatComing) {
-            try {
-                Thread.sleep(1); // wait if another boat is coming
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Boat.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            Util.pause(1);
         }
         sailBoat();
     }
@@ -77,11 +66,7 @@ public class Boat extends Thread {
 
         island.currentImage = island.withShip;
 
-        try {
-            Thread.sleep(INTERVAL);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Boat.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Util.pause(INTERVAL);
 
         island.currentImage = island.noShip;
         island.boatComing = false;
@@ -89,11 +74,7 @@ public class Boat extends Thread {
     }
 
     private void move() {
-        try {
-            Thread.sleep(BOAT_SPEED);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Boat.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Util.pause(BOAT_SPEED);
 
         // move horizontally
         if (this.x < island.x) {

@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -169,11 +167,7 @@ public class Board extends JPanel {
             current = current.prev;
         }
 
-        try {
-            Thread.sleep(DELAY);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Util.pause(DELAY);
         repaint();
     }
 
