@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 /**
  * This is a very nasty class that violates Single Responsibility Principle and
- * probably more... But, c'mon this assignment is really difficult :c
+ * probably more, but gets the job done...
  *
  * @author eirikenriquez
  */

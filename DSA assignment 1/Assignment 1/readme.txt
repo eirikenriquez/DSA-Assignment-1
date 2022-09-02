@@ -6,3 +6,5 @@ Notes:
 	
 	Question 2:
 		- The water is sewage water
+		- The Question is: “Which object have you chosen for the synchronize? Why?
+		- My Answer is: I chose the Island object as the synchronized object for the Boats/Threads because all the Boat objects/threads update/access the boatDocked boolean in the Island object which enables the possibility of a race condition if the object weren't synchronized.

@@ -1,4 +1,3 @@
-// Question: “Which object have you chosen for the synchronize? Why?”   Answer:
 package Question2;
 
 import java.awt.Image;
@@ -13,12 +12,11 @@ import javax.swing.ImageIcon;
  */
 public class Boat extends Thread {
 
-    private static final int INTERVAL = 500; // interval between the boats
+    private static final int INTERVAL = 1000; // interval between the boats
     private static final int BOAT_SPEED = 1; // lower is faster
     private final Random rand;
     public final Image image;
     public final Island island;
-    private final int delay; // needed to randomise the thread/boat order
     public boolean landed;
     public boolean sailing;
     public boolean syncSetting;
@@ -27,30 +25,21 @@ public class Boat extends Thread {
 
     public Boat(Island island, int x, int y) {
         this.rand = new Random();
-        this.delay = rand.nextInt(1000);
         this.image = new ImageIcon("./images/boat.png/").getImage();
         this.island = island;
         this.landed = false;
         this.x = x;
         this.y = y;
         syncSetting = false;
-
     }
 
     @Override
     public void run() {
-        try {
-            Thread.sleep(delay);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Boat.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
         if (syncSetting) {
             runSynchronized();
         } else {
             runUnSynchronized();
         }
-
     }
 
     private void runSynchronized() {

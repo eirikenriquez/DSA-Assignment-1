@@ -9,7 +9,6 @@ import javax.swing.JFrame;
 public class Frame extends JFrame {
 
     public Frame() {
-
         super("Ship-Island Port Simulation");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
