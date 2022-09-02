@@ -15,10 +15,10 @@ public class Boat extends Thread {
 
     private static final int INTERVAL = 500; // interval between the boats
     private static final int BOAT_SPEED = 1; // lower is faster
-    private final Random rand; // needed to randomise the thread/boat order
+    private final Random rand;
     public final Image image;
     public final Island island;
-    private final int delay;
+    private final int delay; // needed to randomise the thread/boat order
     public boolean landed;
     public boolean sailing;
     public boolean syncSetting;
@@ -78,6 +78,7 @@ public class Boat extends Thread {
     }
 
     private void sailBoat() {
+        // These two variables are effectively the same but since the island object is shared, the sailing boolean variable is necessary for detecting crashes.
         island.boatComing = true;
         this.sailing = true;
 
@@ -86,7 +87,6 @@ public class Boat extends Thread {
         } while (!(landed = this.x == island.x && this.y == island.y));
 
         island.currentImage = island.withShip;
-        this.sailing = false;
 
         try {
             Thread.sleep(INTERVAL);
@@ -96,6 +96,7 @@ public class Boat extends Thread {
 
         island.currentImage = island.noShip;
         island.boatComing = false;
+        this.sailing = false;
     }
 
     private void move() {

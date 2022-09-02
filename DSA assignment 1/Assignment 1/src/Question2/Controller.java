@@ -26,6 +26,8 @@ public class Controller implements ActionListener {
             case "Unsynchronized":
                 panel.changeSyncSetting(false);
                 break;
+            case "Reset":
+                panel.reset();
             default:
                 break;
         }
